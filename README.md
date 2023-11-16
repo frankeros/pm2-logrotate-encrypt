@@ -46,3 +46,10 @@ e.g:
 - `pm2 set pm2-logrotate:max_size 1K` (1KB)
 - `pm2 set pm2-logrotate:compress true` (compress logs when rotated)
 - `pm2 set pm2-logrotate:rotateInterval '*/1 * * * *'` (force rotate every minute)
+- `pm2 set pm2-logrotate:encrypt true` (encrypt logs when rotated)
+- `pm2 set pm2-logrotate:password mySecurePassword12345!` (password to encrypt)
+
+
+
+### To decrypt 
+`node decrypt.js path/to/log/file mySecurePassword12345!` (decrypt file o a new file: xyz.log => xyz.log.decrypted)

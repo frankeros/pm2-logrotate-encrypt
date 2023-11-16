@@ -5,6 +5,8 @@ var pm2     	= require('pm2');
 var moment  	= require('moment-timezone');
 var scheduler	= require('node-schedule');
 var zlib      = require('zlib');
+var crypto    = require('crypto');
+const { pipeline } = require('stream');
 
 var conf = pmx.initModule({
   widget : {
@@ -41,6 +43,7 @@ var SIZE_LIMIT = get_limit_size(); // default : 10MB
 var ROTATE_CRON = conf.rotateInterval || "0 0 * * *"; // default : every day at midnight
 var RETAIN = isNaN(parseInt(conf.retain)) ? undefined : parseInt(conf.retain); // All
 var COMPRESSION = JSON.parse(conf.compress) || false; // Do not compress by default
+var ENCRYPT = JSON.parse(conf.encrypt) || true; // Encrypt by default
 var DATE_FORMAT = conf.dateFormat || 'YYYY-MM-DD_HH-mm-ss';
 var TZ = conf.TZ;
 var ROTATE_MODULE = JSON.parse(conf.rotateModule) || true;
@@ -87,7 +90,6 @@ function delete_old(file) {
   });
 }
 
-
 /**
  * Apply the rotation process of the log file.
  *
@@ -111,16 +113,30 @@ function proceed(file) {
     final_name += ".gz";
   }
 
+  if (ENCRYPT) {
+    var AppendInitVect = require('./appendInitVect');
+    var getCipherKey = require('./getCipherKey'); 
+
+    // Generate a secure, pseudo random initialization vector.
+    const initVect = crypto.randomBytes(16);
+    
+    // Generate a cipher key from the password.
+    const CIPHER_KEY = getCipherKey(conf.password);
+    var cipher = crypto.createCipheriv('aes256', CIPHER_KEY, initVect);
+    var appendInitVect = new AppendInitVect(initVect);
+  }
+
   // create our read/write streams
 	var readStream = fs.createReadStream(file);
 	var writeStream = fs.createWriteStream(final_name, {'flags': 'w+'});
 
   // pipe all stream
-  if (COMPRESSION)
-    readStream.pipe(GZIP).pipe(writeStream);
-  else 
-    readStream.pipe(writeStream);
-  
+  pipeline(
+    readStream,
+    ...(COMPRESSION ? [GZIP] : []),
+    ...(ENCRYPT ? [cipher, appendInitVect] : []),
+    writeStream
+  );
 
   // listen for error
   readStream.on('error', pmx.notify.bind(pmx));
@@ -136,7 +152,7 @@ function proceed(file) {
     }
     readStream.close();
     writeStream.close();
-    fs.truncate(file, function (err) {
+    fs.truncate(file, function (err) {
       if (err) return pmx.notify(err);
       console.log('"' + final_name + '" has been created');
 
