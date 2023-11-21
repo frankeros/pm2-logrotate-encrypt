@@ -52,4 +52,6 @@ e.g:
 
 
 ### To decrypt 
-`node decrypt.js path/to/log/file mySecurePassword12345!` (decrypt file o a new file: xyz.log => xyz.log.decrypted)
+`node decrypt.js <path to log file> <password> <file compressed>`
+e.g
+`node decrypt.js path/to/log/file mySecurePassword12345! false` (decrypt file o a new file: xyz.log => xyz.log.decrypted)
