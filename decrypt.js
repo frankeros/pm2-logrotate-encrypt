@@ -22,7 +22,7 @@ function decrypt({ file, password, compressed }) {
     const cipherKey = getCipherKey(password);
     const readStream = fs.createReadStream(file, { start: 16 });
     const decipher = crypto.createDecipheriv('aes256', cipherKey, initVect);
-    const unzip = zlib.createUnzip();
+    const unzip = zlib.createGunzip();
     const newFile = file + '.decrypted';
     const writeStream = fs.createWriteStream(newFile);
     
