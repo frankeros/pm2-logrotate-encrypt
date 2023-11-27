@@ -135,7 +135,8 @@ function proceed(file) {
     readStream,
     ...(COMPRESSION ? [GZIP] : []),
     ...(ENCRYPT ? [cipher, appendInitVect] : []),
-    writeStream
+    writeStream,
+    () => {console.log("pipeline accomplished.")}
   );
 
   // listen for error

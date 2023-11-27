@@ -1,9 +1,10 @@
 {
-  "name": "pm2-logrotate",
+  "name": "pm2-logrotate-encrypt",
   "version": "2.7.0",
   "description": "Module to rotate logs of every pm2 application",
   "main": "app.js",
   "dependencies": {
+    "crypto": "^1.0.1",
     "graceful-fs": "^4.2.2",
     "moment-timezone": "^0.5.11",
     "node-schedule": "^1.3.1",
@@ -25,9 +26,9 @@
   "license": "MIT",
   "apps": [
     {
-      "name": "pm2-logrotate",
+      "name": "pm2-logrotate-encrypt",
       "script": "app.js",
-      "max_memory_restart" : "500M"
+      "max_memory_restart": "500M"
     }
   ],
   "config": {

@@ -5,7 +5,7 @@ PM2 module to automatically rotate logs of processes managed by PM2.
 
 ## Install
 
-    pm2 install pm2-logrotate
+    pm2 install pm2-logrotate-encrypt
 
 **NOTE:** the command is `pm2 install` NOT `npm install`
 
@@ -52,4 +52,6 @@ e.g:
 
 
 ### To decrypt 
-`node decrypt.js path/to/log/file mySecurePassword12345!` (decrypt file o a new file: xyz.log => xyz.log.decrypted)
+`node decrypt.js <path to log file> <password> <file compressed>`
+e.g
+`node decrypt.js path/to/log/file mySecurePassword12345! false` (decrypt file o a new file: xyz.log => xyz.log.decrypted)
