@@ -74,25 +74,28 @@ function get_limit_size() {
   return parseInt(conf.max_size);
 }
 
-const putFileToS3 = (local_file_path, s3_file_path) => new Promise((resolve, reject) => {
+const putFileToS3 = async (local_file_path, s3_file_path) => {
   const client = new S3Client({
     credentials: {
       accessKeyId: conf.awsAccessKeyId,
       secretAccessKey: conf.awsSecretAccessKey,
       region: conf.awsRegion || 'us-west-2',
     }
-  })
+  });
+  const fileStream = fs.createReadStream(local_file_path);
   const params = {
-    localFile: local_file_path,
-    s3Params: {
-      Bucket: conf.s3BucketName,
-      Key: s3_file_path
-    }
+    Bucket: conf.s3BucketName,
+    Key: s3_file_path,
+    Body: fileStream
   };
-  const uploader = s3client.uploadFile(params);
-  uploader.on('error', error => reject(error));
-  uploader.on('end', () => resolve(''));
-});
+  try {
+    const result = await client.send(new PutObjectCommand(params));
+    console.log('"' + rotated_files[i] + '" has been archived on s3');
+    return result
+  } catch (err) {
+      console.error("Error", err);
+  }
+};
 
 function delete_old(file) {
   if (file === "/dev/null") return;
@@ -124,7 +127,6 @@ function delete_old(file) {
           }`;
         putFileToS3(local_file_path, s3_file_path)
           .then(() => {
-            console.log('"' + rotated_files[i] + '" has been archived on s3');
             fs.unlink(local_file_path, function (err) {
               if (err) return console.error(err);
               console.log('"' + rotated_files[i] + '" has been deleted');
