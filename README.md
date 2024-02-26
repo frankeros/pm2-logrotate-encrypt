@@ -40,14 +40,20 @@ After having installed the module, you have to type :
 ### How to set these values ?
 
  After having installed the module you have to type :
-`pm2 set pm2-logrotate:<param> <value>`
+`pm2 set pm2-logrotate-encrypt:<param> <value>`
 
 e.g:
-- `pm2 set pm2-logrotate:max_size 1K` (1KB)
-- `pm2 set pm2-logrotate:compress true` (compress logs when rotated)
-- `pm2 set pm2-logrotate:rotateInterval '*/1 * * * *'` (force rotate every minute)
-- `pm2 set pm2-logrotate:encrypt true` (encrypt logs when rotated)
-- `pm2 set pm2-logrotate:password mySecurePassword12345!` (password to encrypt)
+- `pm2 set pm2-logrotate-encrypt:max_size 1K` (1KB)
+- `pm2 set pm2-logrotate-encrypt:compress true` (compress logs when rotated)
+- `pm2 set pm2-logrotate-encrypt:rotateInterval '*/1 * * * *'` (force rotate every minute)
+- `pm2 set pm2-logrotate-encrypt:encrypt true` (encrypt logs when rotated)
+- `pm2 set pm2-logrotate-encrypt:password mySecurePassword12345!` (password to encrypt)
+- `pm2 set pm2-logrotate-encrypt:retain 5` (5 file logs)
+- `pm2 set pm2-logrotate-encrypt:awsAccessKeyId <AWS_ACCESS_KEY_ID>` (AWS Access Key Id)
+- `pm2 set pm2-logrotate-encrypt:awsSecretAccessKey <AWS_SECRET_ACCESS_KEY>` (AWS Region)
+- `pm2 set pm2-logrotate-encrypt:awsRegion us-west-2` (AWS Secret Access Key)
+- `pm2 set pm2-logrotate-encrypt:s3BucketName application-logs` (S3 Bucker Name)
+- `pm2 set pm2-logrotate-encrypt:s3BucketPrefix prod-server` (s3 Bucket Prefix)
 
 
 
