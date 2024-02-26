@@ -126,7 +126,6 @@ function delete_old(file) {
           .then(() => {
             fs.unlink(local_file_path, function (err) {
               if (err) return console.error(err);
-              console.log('"' + rotated_files[i] + '" has been deleted');
             });
           }).catch((error) => {
             console.error(JSON.stringify(error));
