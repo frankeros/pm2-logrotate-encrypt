@@ -124,8 +124,10 @@ function delete_old(file) {
           }`;
         putFileToS3(local_file_path, s3_file_path)
           .then(() => {
+            console.log('"' + rotated_files[i] + '" has been archived on s3');
             fs.unlink(local_file_path, function (err) {
               if (err) return console.error(err);
+              console.log('"' + rotated_files[i] + '" has been deleted');
             });
           }).catch((error) => {
             console.error(JSON.stringify(error));
