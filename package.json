@@ -1,5 +1,5 @@
 {
-  "name": "pm2-logrotate-encrypt",
+  "name": "@frankeros/pm2-logrotate-encrypt",
   "version": "2.7.0",
   "description": "Module to rotate logs of every pm2 application",
   "main": "app.js",
@@ -40,5 +40,12 @@
     "workerInterval": "30",
     "rotateInterval": "0 0 * * *",
     "rotateModule": true
+  },
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {},
+  "publishConfig": {
+    "@frankeros:registry": "https://npm.pkg.github.com"
   }
 }

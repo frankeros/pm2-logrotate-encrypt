@@ -22,7 +22,6 @@ function decrypt({ file, password, compressed }) {
     const cipherKey = getCipherKey(password);
     const readStream = fs.createReadStream(file, { start: 16 });
     const decipher = crypto.createDecipheriv('aes256', cipherKey, initVect);
-    const unzip = zlib.createGunzip();
     const newFile = file + '.decrypted';
     const writeStream = fs.createWriteStream(newFile);
     
@@ -30,7 +29,7 @@ function decrypt({ file, password, compressed }) {
     await pipelineAsync(
       readStream,
       decipher,
-      //...(compressed ? [unzip] : []),
+      ...(compressed ? [zlib.createGunzip()] : []),
       writeStream,
     );
       console.log(`file decrypted on ${newFile}`);
