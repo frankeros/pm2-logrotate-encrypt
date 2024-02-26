@@ -30,7 +30,7 @@ function decrypt({ file, password, compressed }) {
     await pipelineAsync(
       readStream,
       decipher,
-      ...(compressed ? [unzip] : []),
+      //...(compressed ? [unzip] : []),
       writeStream,
     );
       console.log(`file decrypted on ${newFile}`);

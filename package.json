@@ -4,6 +4,7 @@
   "description": "Module to rotate logs of every pm2 application",
   "main": "app.js",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.521.0",
     "crypto": "^1.0.1",
     "graceful-fs": "^4.2.2",
     "moment-timezone": "^0.5.11",
