@@ -94,6 +94,7 @@ const putFileToS3 = async (local_file_path, s3_file_path) => {
     return result
   } catch (err) {
       console.error("Error", err);
+      return Promise.reject(err);
   }
 };
 
@@ -126,7 +127,7 @@ function delete_old(file) {
         putFileToS3(local_file_path, s3_file_path)
           .then(() => {
             fs.unlink(local_file_path, function (err) {
-              if (err) return console.error(err);
+              if (err) return;
               console.log('"' + rotated_files[i] + '" has been deleted');
             });
           }).catch((error) => {
