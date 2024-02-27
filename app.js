@@ -90,7 +90,7 @@ const putFileToS3 = async (local_file_path, s3_file_path) => {
   };
   try {
     const result = await client.send(new PutObjectCommand(params));
-    console.log('"' + rotated_files[i] + '" has been archived on s3');
+    console.log('"' + local_file_path + '" has been archived on s3');
     return result
   } catch (err) {
       console.error("Error", err);
