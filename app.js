@@ -118,12 +118,10 @@ function delete_old(file) {
         const local_file_path = path.resolve(dirName, rotated_files[i]);
         const moment_date = moment();
         const s3_file_path = `${conf.s3BucketPrefix}/${S3_FILE_PATH_FORMAT
-          .replace(/__ip__/, SERVER_PUBLIC_IP || '')
           .replace(/__year__/, moment_date.format('YYYY'))
           .replace(/__month__/, moment_date.format('MMM'))
           .replace(/__day__/, moment_date.format('DD'))
           .replace(/__filename__/, rotated_files[i])
-          .replace(/__epoch__/, moment_date.toDate().getTime())
           }`;
         putFileToS3(local_file_path, s3_file_path)
           .then(() => {
