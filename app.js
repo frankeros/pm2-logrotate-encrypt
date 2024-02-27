@@ -79,8 +79,8 @@ const putFileToS3 = async (local_file_path, s3_file_path) => {
     credentials: {
       accessKeyId: conf.awsAccessKeyId,
       secretAccessKey: conf.awsSecretAccessKey,
-      region: conf.awsRegion || 'us-west-2',
-    }
+    },
+    region: conf.awsRegion || 'us-west-2',
   });
   const fileStream = fs.createReadStream(local_file_path);
   const params = {
