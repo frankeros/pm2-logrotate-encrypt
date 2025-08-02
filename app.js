@@ -74,25 +74,29 @@ function get_limit_size() {
   return parseInt(conf.max_size);
 }
 
-const putFileToS3 = (local_file_path, s3_file_path) => new Promise((resolve, reject) => {
+const putFileToS3 = async (local_file_path, s3_file_path) => {
   const client = new S3Client({
     credentials: {
       accessKeyId: conf.awsAccessKeyId,
       secretAccessKey: conf.awsSecretAccessKey,
-      region: conf.awsRegion || 'us-west-2',
-    }
-  })
+    },
+    region: conf.awsRegion || 'us-west-2',
+  });
+  const fileStream = fs.createReadStream(local_file_path);
   const params = {
-    localFile: local_file_path,
-    s3Params: {
-      Bucket: conf.s3BucketName,
-      Key: s3_file_path
-    }
+    Bucket: conf.s3BucketName,
+    Key: s3_file_path,
+    Body: fileStream
   };
-  const uploader = s3client.uploadFile(params);
-  uploader.on('error', error => reject(error));
-  uploader.on('end', () => resolve(''));
-});
+  try {
+    const result = await client.send(new PutObjectCommand(params));
+    console.log('"' + local_file_path + '" has been archived on s3');
+    return result
+  } catch (err) {
+      console.error("Error", err);
+      return Promise.reject(err);
+  }
+};
 
 function delete_old(file) {
   if (file === "/dev/null") return;
@@ -115,17 +119,16 @@ function delete_old(file) {
         const local_file_path = path.resolve(dirName, rotated_files[i]);
         const moment_date = moment();
         const s3_file_path = `${conf.s3BucketPrefix}/${S3_FILE_PATH_FORMAT
-          .replace(/__ip__/, SERVER_PUBLIC_IP || '')
           .replace(/__year__/, moment_date.format('YYYY'))
           .replace(/__month__/, moment_date.format('MMM'))
           .replace(/__day__/, moment_date.format('DD'))
           .replace(/__filename__/, rotated_files[i])
-          .replace(/__epoch__/, moment_date.toDate().getTime())
           }`;
         putFileToS3(local_file_path, s3_file_path)
           .then(() => {
             fs.unlink(local_file_path, function (err) {
-              if (err) return console.error(err);
+              if (err) return;
+              console.log('"' + rotated_files[i] + '" has been deleted');
             });
           }).catch((error) => {
             console.error(JSON.stringify(error));
